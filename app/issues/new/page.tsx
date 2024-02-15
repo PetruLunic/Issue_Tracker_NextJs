@@ -10,7 +10,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {createIssueSchema} from "@/app/validationSchemas";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
-import {CreateIssue} from "@/app/types";
+import {RawIssue} from "@/app/types";
 import {createIssue} from "@/app/services/issueAPI";
 
 
@@ -19,7 +19,7 @@ export default function Page() {
   const {register,
     control,
     handleSubmit,
-    formState: {errors, isSubmitting}} = useForm<CreateIssue>({resolver: zodResolver(createIssueSchema)});
+    formState: {errors, isSubmitting}} = useForm<RawIssue>({resolver: zodResolver(createIssueSchema)});
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 

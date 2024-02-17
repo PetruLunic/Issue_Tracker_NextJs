@@ -3,7 +3,7 @@ import {BadgeColor, Issue} from "@/app/types";
 
 
 interface Props{
-  issues: Issue[]
+  issues: Issue[],
 }
 
 export default function IssuesTable({issues}: Props) {

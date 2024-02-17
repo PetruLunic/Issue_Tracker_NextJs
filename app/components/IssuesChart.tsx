@@ -34,7 +34,7 @@ export default function IssuesChart({issuesCount}: Props){
     datasets: [
       {
         label: "Number",
-        data: Object.values(StatusProperty).map((status) => issuesCount[status]),
+        data: Object.values(issuesCount),
         backgroundColor: 'rgba(53, 162, 235, 0.8)'
       }
     ]

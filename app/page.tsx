@@ -5,10 +5,8 @@ import IssuesList from "@/app/components/IssuesList";
 import IssuesChart from "@/app/components/IssuesChart";
 
 export default async function Home() {
-  const issues = await getIssues({sort: "desc"}).then(res => res.data);
+  const issues = await getIssues({sort: "desc", limit: 7}).then(res => res.data);
   const issuesCount = await getIssuesCount().then(res => res.data);
-
-  console.log(issuesCount)
 
   return (
     <Grid columns="2" gap="6">
@@ -22,7 +20,7 @@ export default async function Home() {
           <IssuesChart issuesCount={issuesCount}/>
         </Card>
       </Flex>
-      <Card className="w-full">
+      <Card className="w-full p-0">
         <Heading as="h3" style={{marginBottom: "20px"}}>Latest Issues</Heading>
         <IssuesList issues={issues}/>
       </Card>

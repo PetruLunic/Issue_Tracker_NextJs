@@ -1,41 +1,43 @@
 "use client"
 
-interface Props{
+import ReactPaginate from "react-paginate";
+import {useWritableSearchParams} from "@/app/hooks/useWritableSearchParams";
+import {useMemo} from "react";
+import {useSearchParams} from "next/navigation";
 
+interface Props{
+  pageCount: number
 }
 
-export default function IssuesPagination({}: Props) {
-  const [itemOffset, setItemOffset] = useState(0);
+export default function IssuesPagination({pageCount}: Props) {
+  const setParams = useWritableSearchParams();
+  const queryParams = useSearchParams();
 
-  // Simulate fetching items from another resources.
-  // (This could be items from props; or items loaded in a local state
-  // from an API endpoint with useEffect and useState)
-  const endOffset = itemOffset + itemsPerPage;
-  console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-  const currentItems = items.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(items.length / itemsPerPage);
-
-  // Invoke when user click to request another page.
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % items.length;
-    console.log(
-        `User requested page number ${event.selected}, which is offset ${newOffset}`
-    );
-    setItemOffset(newOffset);
+  const handlePageClick = (event: {selected: any}) => {
+    setParams.set({"page": event.selected + 1});
   };
 
+  const forcePage = useMemo(() => {
+    const page = queryParams.get("page");
+
+    return page ? parseInt(page) - 1 : undefined;
+  }, [queryParams])
+
   return (
-      <>
-        <Items currentItems={currentItems} />
-        <ReactPaginate
-            breakLabel="..."
-            nextLabel="next >"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={5}
-            pageCount={pageCount}
-            previousLabel="< previous"
-            renderOnZeroPageCount={null}
-        />
-      </>
+    <ReactPaginate
+        breakLabel="..."
+        nextLabel=">"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={2}
+        forcePage={forcePage}
+        pageCount={pageCount}
+        previousLabel="<"
+        renderOnZeroPageCount={null}
+        containerClassName="flex gap-2 mt-3"
+        pageLinkClassName="py-2 px-4 hover:bg-sky-200 rounded border"
+        nextLinkClassName="py-2 px-4 hover:bg-sky-200 rounded border"
+        previousLinkClassName="py-2 px-4 hover:bg-sky-200 rounded border"
+        activeLinkClassName="bg-sky-500 rounded hover:bg-sky-500"
+    />
   );
 };

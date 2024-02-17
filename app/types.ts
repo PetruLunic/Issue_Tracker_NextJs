@@ -1,7 +1,13 @@
 import {z} from "zod";
 import {createIssueSchema} from "@/app/validationSchemas";
 
-export type IssueStatus = "OPEN" | "CLOSED" | "IN_PROGRESS";
+const issueStatus = ["OPEN", "CLOSED", "IN_PROGRESS"] as const;
+
+export type IssueStatus = typeof issueStatus[number];
+
+export function isIssueStatus(string: string | null | undefined): string is IssueStatus {
+  return !!issueStatus.find(status => status === string);
+}
 
 export type RawIssue = z.infer<typeof createIssueSchema>;
 
@@ -25,6 +31,7 @@ export enum StatusText {
 }
 
 export enum StatusProperty {
+  "all" = "total",
   "OPEN" = "open",
   "IN_PROGRESS" = "inProgress",
   "CLOSED" = "closed"

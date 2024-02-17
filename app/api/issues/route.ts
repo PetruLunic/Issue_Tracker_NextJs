@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/prisma/client";
 import {createIssueSchema} from "@/app/validationSchemas";
+import {isIssueStatus, Issue, IssueStatus} from "@/app/types";
 
 export async function POST(request: Request) {
   try {
@@ -24,15 +25,18 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const limit = searchParams.get("limit");
+    const page = searchParams.get("page");
     const sort = searchParams.get("sort") === "desc" ? "desc" : "asc";
+    const status = searchParams.get("status");
 
-    let issues;
+    const skip = limit && page ? (parseInt(page) - 1) * parseInt(limit) : null;
 
-    if (limit) {
-      issues = await prisma.issue.findMany({orderBy: [{id: sort}], take: parseInt(limit)});
-    } else {
-      issues = await prisma.issue.findMany({orderBy: [{id: sort}]});
-    }
+    const issues: Issue[] = await prisma.issue.findMany({
+      orderBy: [{id: sort}],
+      ...(skip ? {skip} : {}),
+      ...(limit ? {take: parseInt(limit)} : {}),
+      ...(status && isIssueStatus(status) ? {where: {status}} : {})
+    });
 
     return NextResponse.json(issues);
   } catch(e) {

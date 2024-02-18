@@ -12,21 +12,23 @@ export const useWritableSearchParams = (): WritableSearchParams => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const currentRef = useRef(new URLSearchParams(Array.from(searchParams.entries())));
 
   return {
     set: (keys) => {
-      currentRef.current = new URLSearchParams(Array.from(searchParams.entries()));
-      for (let key in keys) {
-        currentRef.current.set(key, keys[key]);
-      }
-      router.push(`${pathname}/?${currentRef.current.toString()}`);
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
 
+      for (let key in keys) {
+        current.set(key, keys[key]);
+      }
+
+      router.push(`${pathname}/?${current.toString()}`);
     },
     delete: (key: string) => {
-      currentRef.current = new URLSearchParams(Array.from(searchParams.entries()));
-      currentRef.current.delete(key);
-      router.push(`${pathname}/?${currentRef.current.toString()}`);
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+
+      current.delete(key);
+
+      router.push(`${pathname}/?${current.toString()}`);
     }
   }
 }

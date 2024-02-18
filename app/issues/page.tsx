@@ -21,6 +21,7 @@ export default function Page() {
       useState<{open: number, inProgress: number, closed: number, total: number}>({open: 0, closed: 0, inProgress: 0, total: 0});
   const [totalLength, setTotalLength] = useState(0);
   const [status, setStatus] = useState<IssueStatus | "all">("all");
+  const [sort, setSort] = useState<"asc" | "desc">("asc")
 
   // set status in state when changing status query param
   useEffect(() => {
@@ -31,14 +32,13 @@ export default function Page() {
     }
   }, [queryParams]);
 
-  // setting page 1 on changing status
   // useEffect(() => {
-  //   if (!status) return;
+  //   const sort = queryParams.get("sort");
   //
-  //   console.log("set page");
-  //
-  //   setParams.set("page", "1");
-  // }, [status]);
+  //   if (sort && (sort === "asc" || sort === "desc")){
+  //     setSort(sort);
+  //   }
+  // }, [queryParams])
 
   // changing the length of the issues when changing the status
   useEffect(() => {
@@ -57,7 +57,9 @@ export default function Page() {
     getIssues({
       limit,
       page: parseInt(queryParams.get("page") || "1"),
-      status: queryParams.get("status") as IssueStatus
+      status: queryParams.get("status") as IssueStatus,
+      sort: queryParams.get("sort") as "asc" | "desc",
+      orderBy: queryParams.get("orderBy")
     })
         .then(res => setIssues(res.data));
   }, [queryParams]);

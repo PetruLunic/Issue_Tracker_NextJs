@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@/prisma/client";
 import {createIssueSchema} from "@/app/validationSchemas";
-import {isIssueStatus, Issue, IssueStatus} from "@/app/types";
+import {isIssueProperty, isIssueStatus, Issue, IssueProperty, IssueStatus} from "@/app/types";
 
 export async function POST(request: Request) {
   try {
@@ -28,11 +28,12 @@ export async function GET(request: NextRequest) {
     const page = searchParams.get("page");
     const sort = searchParams.get("sort") === "desc" ? "desc" : "asc";
     const status = searchParams.get("status");
+    const orderBy = searchParams.get("orderBy") || "id" as IssueProperty;
 
     const skip = limit && page ? (parseInt(page) - 1) * parseInt(limit) : null;
 
     const issues: Issue[] = await prisma.issue.findMany({
-      orderBy: [{id: sort}],
+      orderBy: [{[orderBy]: sort}],
       ...(skip ? {skip} : {}),
       ...(limit ? {take: parseInt(limit)} : {}),
       ...(status && isIssueStatus(status) ? {where: {status}} : {})

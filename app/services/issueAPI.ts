@@ -3,14 +3,15 @@ import axios, {AxiosPromise} from "axios";
 
 const baseUrl = "http://localhost:3000/api/issues"
 
-export const getIssues = ({sort = "asc", limit, page, status}: {sort?: "asc" | "desc", limit?: number, page?: number, status?: IssueStatus} = {}): AxiosPromise<Issue[]> => {
+export const getIssues = ({sort = "asc", limit, page, status, orderBy}: {sort?: "asc" | "desc", limit?: number, page?: number, status?: IssueStatus, orderBy?: string | null} = {}): AxiosPromise<Issue[]> => {
   try {
     return axios.get(baseUrl,
         {params: {
             sort,
             ...(limit ? { limit } : {}),
             ...(page ? { page } : {}),
-            ...(status ? {status} : {})
+            ...(status ? {status} : {}),
+            ...(orderBy ? {orderBy} : {})
           }});
   } catch(e) {
     throw "Error at getting issues";

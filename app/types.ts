@@ -3,10 +3,18 @@ import {createIssueSchema} from "@/app/validationSchemas";
 
 const issueStatus = ["OPEN", "CLOSED", "IN_PROGRESS"] as const;
 
+const issueProperties = ["id", "title", "status", "description", "createdAt", "updatedAt"] as const;
+
+export type IssueProperty = typeof issueProperties[number];
+
 export type IssueStatus = typeof issueStatus[number];
 
 export function isIssueStatus(string: string | null | undefined): string is IssueStatus {
   return !!issueStatus.find(status => status === string);
+}
+
+export function isIssueProperty(string: string): string is IssueProperty {
+  return !!issueProperties.find(prop => prop === string);
 }
 
 export type RawIssue = z.infer<typeof createIssueSchema>;
